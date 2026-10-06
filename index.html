@@ -1,784 +1,557 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ogawa Dynamics LLC | Advanced Mechanical Engineering & FEA Simulation</title>
-  <meta name="description" content="Precision CAD design, structural FEA simulation, polymer engineering, and production DFM for robotics, industrial tooling, IoT hardware, and advanced consumer systems." />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      --bg: #090b10;
-      --card-bg: rgba(16, 21, 30, 0.7);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent-cyan: #00d2ff;
-      --accent-blue: #3a7bd5;
-      --accent-amber: #f59e0b;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Subtle Technical Blueprint Grid */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Navigation */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      backdrop-filter: blur(12px);
-      background: rgba(9, 11, 16, 0.85);
-      border-bottom: 1px solid var(--card-border);
-      z-index: 100;
-    }
-
-    nav {
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text-main);
-    }
-
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      border: 1.5px solid var(--accent-cyan);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--accent-cyan);
-      box-shadow: 0 0 16px rgba(0, 210, 255, 0.25);
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-name span {
-      color: var(--text-muted);
-      font-weight: 400;
-      font-size: 14px;
-      margin-left: 4px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--accent-cyan);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: #040914;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(0, 210, 255, 0.4);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
-      font-weight: 600;
-      font-size: 14px;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: background 0.2s ease;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding-top: 160px;
-      padding-bottom: 90px;
-      position: relative;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 48px;
-      align-items: center;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      background: rgba(0, 210, 255, 0.08);
-      border: 1px solid rgba(0, 210, 255, 0.25);
-      border-radius: 999px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--accent-cyan);
-      margin-bottom: 24px;
-    }
-
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-cyan);
-    }
-
-    h1 {
-      font-size: 46px;
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 20px;
-    }
-
-    h1 span {
-      background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      font-size: 17px;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-      max-width: 560px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    /* Canvas Mesh Container */
-    .canvas-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      height: 380px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    #webgl-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .canvas-hud {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--accent-cyan);
-      pointer-events: none;
-      background: rgba(9, 11, 16, 0.7);
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid rgba(0, 210, 255, 0.15);
-    }
-
-    /* Industry Target Sector Banner */
-    .sectors-bar {
-      margin: 20px 0 80px 0;
-      padding: 24px;
-      background: rgba(16, 21, 30, 0.5);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-    }
-
-    .sectors-title {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    .sectors-grid {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .sector-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .sector-item svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--accent-cyan);
-    }
-
-    /* Core Capabilities */
-    .section-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .section-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--accent-cyan);
-      margin-bottom: 8px;
-    }
-
-    .section-title {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 80px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 28px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0, 210, 255, 0.3);
-    }
-
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      background: rgba(0, 210, 255, 0.08);
-      border: 1px solid rgba(0, 210, 255, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .card-icon svg {
-      width: 22px;
-      height: 22px;
-      stroke: var(--accent-cyan);
-    }
-
-    .card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .card p {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-
-    .card ul {
-      list-style: none;
-      border-top: 1px solid var(--card-border);
-      padding-top: 16px;
-    }
-
-    .card li {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card li::before {
-      content: "•";
-      color: var(--accent-cyan);
-      font-size: 16px;
-    }
-
-    /* Materials & DFM Panel */
-    .dfm-panel {
-      background: linear-gradient(135deg, rgba(16, 21, 30, 0.9), rgba(12, 16, 24, 0.9));
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 40px;
-      margin-bottom: 80px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: center;
-    }
-
-    .dfm-spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--font-mono);
-      font-size: 13px;
-    }
-
-    .dfm-spec-table th, .dfm-spec-table td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .dfm-spec-table th {
-      color: var(--accent-cyan);
-      font-weight: 600;
-    }
-
-    .dfm-spec-table td {
-      color: var(--text-muted);
-    }
-
-    /* Contact / Engagement Section */
-    .contact-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 48px;
-      margin-bottom: 80px;
-      text-align: center;
-    }
-
-    .contact-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .contact-desc {
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 32px auto;
-      font-size: 15px;
-    }
-
-    .contact-box {
-      display: inline-flex;
-      align-items: center;
-      gap: 16px;
-      background: rgba(9, 11, 16, 0.6);
-      padding: 12px 24px;
-      border: 1px solid rgba(0, 210, 255, 0.3);
-      border-radius: 8px;
-      font-family: var(--font-mono);
-      font-size: 16px;
-      color: var(--accent-cyan);
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding: 40px 0 60px 0;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    .footer-grid {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; }
-      .services-grid { grid-template-columns: 1fr; }
-      .dfm-panel { grid-template-columns: 1fr; }
-      .canvas-card { height: 280px; }
-      .nav-links { display: none; }
-      h1 { font-size: 34px; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Navigation -->
-  <header>
-    <div class="container">
-      <nav>
-        <a href="#" class="brand-logo">
-          <div class="brand-mark">OD</div>
-          <div class="brand-name">OGAWA DYNAMICS<span>LLC</span></div>
-        </a>
-        <div class="nav-links">
-          <a href="#services">Capabilities</a>
-          <a href="#engineering">Polymer & DFM</a>
-          <a href="#sectors">Target Sectors</a>
-          <a href="mailto:contact@ogawadynamics.com" class="btn-primary">Initiate Project</a>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-grid">
-        <div>
-          <div class="badge">
-            <span class="badge-dot"></span>
-            Advanced Hardware & Systems Engineering
-          </div>
-          <h1>Precision CAD, FEA Simulation & <span>DFM Validation.</span></h1>
-          <p>
-            Bridging conceptual hardware design and production release. Specialized in complex parametric CAD, finite element structural verification, and polymer tooling design for robotics, industrial systems, and IoT hardware.
-          </p>
-          <div class="hero-actions">
-            <a href="mailto:contact@ogawadynamics.com?subject=Engineering%20Inquiry%20-%20Ogawa%20Dynamics" class="btn-primary">
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Request Engineering Review
-            </a>
-            <a href="#services" class="btn-secondary">Explore Capabilities</a>
-          </div>
-        </div>
-
-        <div class="canvas-card">
-          <canvas id="webgl-canvas"></canvas>
-          <div class="canvas-hud">
-            <span>FINITE ELEMENT MESH (FEA)</span>
-            <span>REAL-TIME INTERACTION</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Target Sectors Bar -->
-  <section id="sectors" class="container">
-    <div class="sectors-bar">
-      <div class="sectors-title">Independent Engineering Services Across Core Hardware Sectors</div>
-      <div class="sectors-grid">
-        <div class="sector-item">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Robotics & Industrial Tooling
-        </div>
-        <div class="sector-item">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          IoT Enclosures & Connected Gear
-        </div>
-        <div class="sector-item">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          Consumer Diagnostics & Automation
-        </div>
-        <div class="sector-item">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
-          Rugged Industrial Machinery
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Capabilities Grid -->
-  <section id="services" class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Technical Domains</div>
-      <h2 class="section-title">Engineered for Rapid Validation & Scalable Tooling</h2>
-    </div>
-
-    <div class="services-grid">
-      <!-- Card 1 -->
-      <div class="card">
-        <div class="card-icon">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        </div>
-        <h3>Structural FEA & Simulation</h3>
-        <p>Numerical stress, deflection, and modal analysis to isolate failure modes prior to physical prototyping.</p>
-        <ul>
-          <li>Static structural & Von Mises stress mapping</li>
-          <li>Displacement & stiffness optimization</li>
-          <li>Fastener & bolted joint preload validation</li>
-          <li>Shock, drop-test & vibration modeling</li>
-        </ul>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="card">
-        <div class="card-icon">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <h3>High-Precision Parametric CAD</h3>
-        <p>Production-grade mechanical design, master model architectures, and detailed manufacturing drawing packages.</p>
-        <ul>
-          <li>Complex Class-A / B surfacing & enclosures</li>
-          <li>GD&T ASME Y14.5 drawing releases</li>
-          <li>Worst-case tolerance stack-up analysis</li>
-          <li>Multi-part assembly packaging</li>
-        </ul>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="card">
-        <div class="card-icon">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </div>
-        <h3>DFM & Tooling Feasibility</h3>
-        <p>Injection moldable plastic design, sheet metal layout, and CNC machining prep to prevent costly tooling revisions.</p>
-        <ul>
-          <li>Draft analysis, parting line & side-action layout</li>
-          <li>Uniform wall thickness & rib coring optimization</li>
-          <li>Sink mark, knit line & gate location evaluation</li>
-          <li>Snap-fit design & retention force calculations</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Materials & DFM Panel -->
-  <section id="engineering" class="container">
-    <div class="dfm-panel">
-      <div>
-        <div class="section-eyebrow">Material Selection & Physics</div>
-        <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">Polymer & Alloy Engineering</h3>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
-          Enclosure reliability starts at the molecular and structural interface. We optimize material grades based on flexural modulus, Young’s modulus, thermal expansion, and environmental resistance.
-        </p>
-        <a href="mailto:contact@ogawadynamics.com?subject=Material%20Consultation" class="btn-secondary">Request Material Evaluation</a>
-      </div>
-
-      <div>
-        <table class="dfm-spec-table">
-          <thead>
-            <tr>
-              <th>Material Family</th>
-              <th>Primary Property</th>
-              <th>Common Use Case</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>PA6 / PA66 (Nylon)</td>
-              <td>High Tensile & Impact Rigidity</td>
-              <td>Structural Brackets, Gear Housings</td>
-            </tr>
-            <tr>
-              <td>PC / ABS Blends</td>
-              <td>Dimensional Stability & Finish</td>
-              <td>IoT Devices, Desktop Enclosures</td>
-            </tr>
-            <tr>
-              <td>6061-T6 Aluminum</td>
-              <td>High Strength-to-Weight</td>
-              <td>Robotics Chassis, CNC Tooling</td>
-            </tr>
-            <tr>
-              <td>POM (Acetal / Delrin)</td>
-              <td>Low Friction & Wear Toughness</td>
-              <td>Precision Bushings & Actuators</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Direct Contact Block -->
-  <section class="container">
-    <div class="contact-section">
-      <div class="section-eyebrow">Project Engagement</div>
-      <h2 class="contact-title">Accelerate Your Hardware Release</h2>
-      <p class="contact-desc">
-        Ogawa Dynamics LLC provides contract CAD modeling, FEA simulation, and DFM reviews for startups, machine integrators, and product manufacturers.
-      </p>
-      
-      <div style="margin-bottom: 24px;">
-        <a href="mailto:contact@ogawadynamics.com?subject=Engineering%20Design%20Inquiry" class="btn-primary" style="padding: 14px 28px; font-size: 16px;">
-          contact@ogawadynamics.com
-        </a>
-      </div>
-      <p style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">
-        Response SLA: Direct engineering response within 24 business hours.
-      </p>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container footer-grid">
-      <div>
-        <strong>OGAWA DYNAMICS LLC</strong><br>
-        <span style="font-size: 12px; color: #64748b;">Michigan Domestic Limited Liability Company</span>
-      </div>
-      <div style="font-family: var(--font-mono); font-size: 12px;">
-        &copy; 2026 Ogawa Dynamics LLC. All rights reserved.
-      </div>
-    </div>
-  </footer>
-
-  <!-- Interactive 3D FEA Mesh Script -->
-  <script>
-    const canvas = document.getElementById('webgl-canvas');
-    const container = canvas.parentElement;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.z = 24;
-
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    // Create an engineering structural mesh geometry
-    const geometry = new THREE.IcosahedronGeometry(9, 2);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ogawa Dynamics | Precision Engineering & Design</title>
     
-    // Wireframe FEA mesh
-    const wireframeMaterial = new THREE.MeshBasicMaterial({
-      color: 0x00d2ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.45
-    });
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0b1320', // Executive Slate Dark
+                            800: '#152238', // Executive Slate Light
+                        },
+                        cyan: {
+                            500: '#00a8e8', // Signature Bright Cyan
+                            400: '#33bdf0',
+                        },
+                        blueprint: 'rgba(0, 168, 232, 0.15)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Roboto Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
 
-    const mesh = new THREE.Mesh(geometry, wireframeMaterial);
-    scene.add(mesh);
+    <style>
+        body {
+            background-color: #0b1320;
+            color: #f8fafc;
+        }
 
-    // Inner structural nodes (FEA point grid)
-    const pointsMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.25,
-      transparent: true,
-      opacity: 0.8
-    });
-    const points = new THREE.Points(geometry, pointsMaterial);
-    scene.add(points);
+        /* Steel & Blueprint Grid Overlay */
+        .blueprint-bg {
+            background-image: 
+                linear-gradient(rgba(0, 168, 232, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 232, 0.07) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center center;
+        }
 
-    // Subtle user interaction rotation
-    let mouseX = 0;
-    let mouseY = 0;
-    container.addEventListener('mousemove', (e) => {
-      const rect = container.getBoundingClientRect();
-      mouseX = ((e.clientX - rect.left) / container.clientWidth - 0.5) * 2;
-      mouseY = ((e.clientY - rect.top) / container.clientHeight - 0.5) * 2;
-    });
+        .blueprint-bg-fine {
+            background-image: 
+                linear-gradient(rgba(0, 168, 232, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 232, 0.03) 1px, transparent 1px);
+            background-size: 10px 10px;
+            background-position: center center;
+        }
 
-    function animate() {
-      requestAnimationFrame(animate);
-      mesh.rotation.y += 0.003;
-      mesh.rotation.x += 0.001;
+        /* Bold Cyan CTA Buttons - Highly Visible */
+        .cta-btn-primary {
+            background-color: #00a8e8;
+            color: #ffffff !important;
+            font-weight: 900;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 168, 232, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .cta-btn-primary:hover {
+            background-color: #33bdf0;
+            box-shadow: 0 0 30px rgba(0, 168, 232, 1), inset 0 0 0 1px #ffffff;
+            transform: translateY(-2px);
+        }
 
-      mesh.rotation.y += (mouseX * 0.5 - mesh.rotation.y) * 0.05;
-      mesh.rotation.x += (mouseY * 0.5 - mesh.rotation.x) * 0.05;
+        /* Technical Card Styling */
+        .tech-card {
+            background: linear-gradient(145deg, #152238, #0b1320);
+            border: 1px solid rgba(0, 168, 232, 0.2);
+            transition: all 0.3s ease;
+        }
 
-      points.rotation.y = mesh.rotation.y;
-      points.rotation.x = mesh.rotation.x;
+        .tech-card:hover {
+            border-color: #00a8e8;
+            box-shadow: 0 10px 30px -10px rgba(0, 168, 232, 0.3);
+            transform: translateY(-4px);
+        }
 
-      renderer.render(scene, camera);
-    }
-    animate();
+        /* Hero Canvas Positioning */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="blueprint-bg relative min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
+    <div class="blueprint-bg-fine absolute inset-0 pointer-events-none z-[-1]"></div>
 
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    });
-  </script>
+    <nav class="fixed w-full z-50 bg-navy-900/95 backdrop-blur-md border-b border-cyan-500/30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                
+                <!-- Logo: Custom Inline SVG -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group">
+                    <!-- SVG Mark (O and D) -->
+                    <svg viewBox="0 0 120 100" class="h-14 w-auto transform transition-transform group-hover:scale-105" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="dGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00a8e8"/>
+                                <stop offset="100%" stop-color="#152238"/>
+                            </linearGradient>
+                            <linearGradient id="dGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#33bdf0"/>
+                                <stop offset="100%" stop-color="#1e3a8a"/>
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The 'O' - Scattered technical dots -->
+                        <g fill="#00a8e8">
+                            <!-- Outer ring dots -->
+                            <circle cx="25" cy="50" r="3.5"/>
+                            <circle cx="30" cy="30" r="4.5"/>
+                            <circle cx="30" cy="70" r="4"/>
+                            <circle cx="45" cy="18" r="5.5"/>
+                            <circle cx="45" cy="82" r="5"/>
+                            <circle cx="65" cy="15" r="6"/>
+                            <circle cx="65" cy="85" r="6"/>
+                            
+                            <!-- Mid ring dots -->
+                            <circle cx="38" cy="42" r="2.5"/>
+                            <circle cx="38" cy="58" r="3"/>
+                            <circle cx="50" cy="30" r="4"/>
+                            <circle cx="50" cy="70" r="4"/>
+                            <circle cx="65" cy="28" r="5"/>
+                            <circle cx="65" cy="72" r="4.5"/>
+
+                            <!-- Tiny scatter dots -->
+                            <circle cx="15" cy="50" r="2"/>
+                            <circle cx="20" cy="40" r="1.5"/>
+                            <circle cx="22" cy="65" r="2"/>
+                            <circle cx="35" cy="20" r="2"/>
+                            <circle cx="55" cy="10" r="2.5"/>
+                            <circle cx="58" cy="92" r="2"/>
+                        </g>
+
+                        <!-- Darker dots transitioning into the 'D' -->
+                        <g fill="#1e3a8a">
+                            <circle cx="50" cy="50" r="3"/>
+                            <circle cx="60" cy="40" r="3.5"/>
+                            <circle cx="60" cy="60" r="3.5"/>
+                            <circle cx="72" cy="50" r="4.5"/>
+                            <circle cx="75" cy="35" r="4"/>
+                            <circle cx="75" cy="65" r="4"/>
+                        </g>
+
+                        <!-- The 'D' - Solid gradient shape -->
+                        <!-- The D starts where the O ends, creating a continuous flow -->
+                        <path d="M 75 15 
+                                 L 85 15 
+                                 C 115 15, 120 40, 120 50 
+                                 C 120 60, 115 85, 85 85 
+                                 L 75 85 
+                                 C 82 75, 85 60, 85 50 
+                                 C 85 40, 82 25, 75 15 Z" 
+                              fill="url(#dGradDark)"/>
+                    </svg>
+
+                    <!-- Text Next to Mark -->
+                    <div class="ml-4 flex flex-col justify-center">
+                        <span class="text-white font-black text-2xl tracking-[0.1em] leading-none uppercase" style="font-family: 'Inter', sans-serif;">
+                            Ogawa
+                        </span>
+                        <span class="text-cyan-400 font-bold text-xl tracking-[0.15em] leading-none uppercase mt-1" style="font-family: 'Inter', sans-serif;">
+                            Dynamics
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#services" class="text-gray-300 hover:text-cyan-400 font-medium tracking-wide text-sm transition-colors uppercase">Services</a>
+                    <a href="#capabilities" class="text-gray-300 hover:text-cyan-400 font-medium tracking-wide text-sm transition-colors uppercase">Capabilities</a>
+                    <a href="#contact" class="cta-btn-primary px-8 py-3 rounded uppercase font-black tracking-widest text-sm">Initiate Project</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24">
+        <section class="relative h-[85vh] min-h-[650px] flex items-center overflow-hidden border-b border-cyan-500/30">
+            <!-- HTML5 Canvas Background for Particle Animation -->
+            <canvas id="hero-canvas"></canvas>
+
+            <!-- Hero Content -->
+            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                <div class="max-w-3xl">
+                    <div class="inline-flex items-center px-4 py-1.5 rounded border border-cyan-500/50 bg-cyan-500/10 text-cyan-400 text-xs font-mono mb-8 uppercase tracking-widest shadow-[0_0_10px_rgba(0,168,232,0.2)]">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 mr-3 animate-pulse shadow-[0_0_5px_#00a8e8]"></span>
+                        Precision Engineering Platform
+                    </div>
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 text-white leading-tight drop-shadow-lg">
+                        Translating Complex Specs Into <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-md">Production Reality.</span>
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-10 max-w-2xl font-light leading-relaxed">
+                        Expert-tier CAD design, Finite Element Analysis (FEA), and seamless product development for aerospace, medical, and industrial sectors. 
+                        <strong class="text-white font-medium">Zero automotive distractions.</strong>
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-5">
+                        <a href="#contact" class="cta-btn-primary text-center px-10 py-4 rounded uppercase font-black tracking-widest text-lg flex items-center justify-center">
+                            Initiate Project
+                            <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                        <a href="#capabilities" class="px-10 py-4 rounded uppercase font-bold tracking-widest text-lg border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400 transition-colors text-center bg-navy-800/80 backdrop-blur-md">
+                            View Specs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-24 bg-navy-900 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-16">
+                    <h2 class="text-3xl font-black text-white mb-4 uppercase tracking-wider">Core Disciplines</h2>
+                    <div class="w-24 h-1 bg-cyan-500 shadow-[0_0_10px_#00a8e8]"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Service 1 -->
+                    <div class="tech-card p-8 rounded-lg border-t-2 border-t-cyan-500">
+                        <div class="text-cyan-400 mb-6 bg-cyan-900/30 inline-block p-4 rounded">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Parametric CAD Design</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            High-fidelity solid modeling prioritizing manufacturability. We develop robust parametric trees tailored for rapid iteration and strict tolerance control.
+                        </p>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="tech-card p-8 rounded-lg border-t-2 border-t-cyan-500">
+                        <div class="text-cyan-400 mb-6 bg-cyan-900/30 inline-block p-4 rounded">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Finite Element Analysis</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            Rigorous structural, thermal, and dynamic simulations. Preemptively identify failure modes to optimize material utilization before physical prototyping.
+                        </p>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="tech-card p-8 rounded-lg border-t-2 border-t-cyan-500">
+                        <div class="text-cyan-400 mb-6 bg-cyan-900/30 inline-block p-4 rounded">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Product Development</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            End-to-end realization from concept ideation to production-ready prints. Focused entirely on sectors requiring absolute precision.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="capabilities" class="py-24 bg-navy-800 border-t border-b border-cyan-500/20 shadow-inner">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-16 text-center">
+                    <h2 class="text-3xl font-black text-white mb-4 uppercase tracking-wider">Technical Documentation & Feasibility</h2>
+                    <p class="text-gray-400 max-w-3xl mx-auto text-lg">High-precision outputs tailored for exact manufacturing execution.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    
+                    <!-- Visual Placeholder 1: 2D Medical Device Cover -->
+                    <div class="flex flex-col bg-navy-900 border border-gray-700 rounded-lg overflow-hidden shadow-2xl hover:border-cyan-500/50 transition-colors">
+                        <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
+                            <span class="font-mono text-sm text-gray-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                MED_COVER_REV_B.dwg
+                            </span>
+                            <span class="font-mono text-xs font-bold text-cyan-500 bg-cyan-500/10 px-2 py-1 rounded">2D DRAFTING</span>
+                        </div>
+                        <div class="p-6 relative bg-[#0f1929] flex-grow flex items-center justify-center blueprint-bg-fine h-[400px]">
+                            <!-- Detailed SVG 2D Schematic -->
+                            <svg width="100%" height="100%" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="select-none drop-shadow-md">
+                                <g stroke="#e2e8f0" stroke-width="1.5" fill="none">
+                                    <!-- Device Main Body -->
+                                    <rect x="80" y="80" width="240" height="140" rx="20" ry="20" stroke="#f8fafc" stroke-width="2"/>
+                                    <!-- Inner features -->
+                                    <rect x="95" y="95" width="210" height="110" rx="10" ry="10" stroke-dasharray="6 4" stroke="#94a3b8" />
+                                    <!-- Bosses/Mounting points -->
+                                    <circle cx="130" cy="150" r="15" />
+                                    <circle cx="130" cy="150" r="6" stroke="#94a3b8"/>
+                                    <circle cx="270" cy="150" r="15" />
+                                    <circle cx="270" cy="150" r="6" stroke="#94a3b8"/>
+                                    <!-- Cutout/Window -->
+                                    <rect x="180" y="130" width="40" height="40" rx="4" stroke="#cbd5e1" stroke-width="1.5"/>
+                                </g>
+                                
+                                <!-- Dimensioning (Cyan) -->
+                                <g stroke="#00a8e8" stroke-width="1" fill="none" class="font-mono text-[11px] font-bold" font-family="monospace">
+                                    <!-- Overall Width -->
+                                    <line x1="80" y1="65" x2="80" y2="35" />
+                                    <line x1="320" y1="65" x2="320" y2="35" />
+                                    <line x1="80" y1="50" x2="320" y2="50" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+                                    <text x="200" y="45" fill="#00a8e8" text-anchor="middle">185.00 ±0.05</text>
+                                    
+                                    <!-- Overall Height -->
+                                    <line x1="330" y1="80" x2="360" y2="80" />
+                                    <line x1="330" y1="220" x2="360" y2="220" />
+                                    <line x1="345" y1="80" x2="345" y2="220" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+                                    <text x="350" y="150" fill="#00a8e8" transform="rotate(90, 350, 150)" text-anchor="middle">95.00 ±0.05</text>
+                                    
+                                    <!-- Internal Spacing -->
+                                    <line x1="130" y1="175" x2="130" y2="250" stroke="#00a8e8" stroke-dasharray="2 2" opacity="0.6"/>
+                                    <line x1="270" y1="175" x2="270" y2="250" stroke="#00a8e8" stroke-dasharray="2 2" opacity="0.6"/>
+                                    <line x1="130" y1="240" x2="270" y2="240" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+                                    <text x="200" y="235" fill="#00a8e8" text-anchor="middle">140.00 TYP</text>
+
+                                    <!-- GD&T Callout Box -->
+                                    <rect x="25" y="260" width="100" height="20" fill="#0b1320" stroke="#00a8e8"/>
+                                    <text x="75" y="273" fill="#00a8e8" text-anchor="middle" font-size="9">⌖ | 0.1 | A | B | C</text>
+                                </g>
+                                
+                                <defs>
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#00a8e8" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="bg-gray-800 p-5 border-t border-gray-700">
+                            <h4 class="text-white font-bold text-lg mb-1">Medical Device Housing (2D Detail)</h4>
+                            <p class="text-sm text-gray-400">Complete GD&T, tolerance stack-up analysis, and critical-to-function dimensioning for strict compliance.</p>
+                        </div>
+                    </div>
+
+                    <!-- Visual Placeholder 2: 3D Injection Molding Draft Analysis -->
+                    <div class="flex flex-col bg-navy-900 border border-gray-700 rounded-lg overflow-hidden shadow-2xl hover:border-cyan-500/50 transition-colors">
+                        <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
+                            <span class="font-mono text-sm text-gray-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-[#ff3366]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                                TOOLING_FEASIBILITY.sim
+                            </span>
+                            <span class="font-mono text-xs font-bold text-[#ff3366] bg-[#ff3366]/10 px-2 py-1 rounded">DRAFT ANALYSIS</span>
+                        </div>
+                        <div class="p-6 relative bg-gradient-to-br from-[#0f1929] to-navy-900 flex-grow flex items-center justify-center h-[400px]">
+                            <!-- High-Fidelity Isometric 3D SVG Heatmap -->
+                            <svg width="100%" height="100%" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-xl">
+                                <g transform="translate(200, 160) scale(1.4)">
+                                    <!-- Base Shadow -->
+                                    <ellipse cx="0" cy="55" rx="85" ry="35" fill="rgba(0,0,0,0.6)" filter="blur(6px)" />
+                                    
+                                    <!-- 3D Component Rendering - Heatmap Colors -->
+                                    <!-- Top Face (Green - Adequate Draft) -->
+                                    <path d="M -70 -15 L 0 -50 L 70 -15 L 0 20 Z" fill="#10b981" stroke="#064e3b" stroke-width="0.5"/>
+                                    <!-- Left Face (Orange - Marginal Draft) -->
+                                    <path d="M -70 -15 L 0 20 L 0 60 L -70 25 Z" fill="#f59e0b" stroke="#78350f" stroke-width="0.5"/>
+                                    <!-- Right Face (Red - Undercut / Zero Draft) -->
+                                    <path d="M 0 20 L 70 -15 L 70 25 L 0 60 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.5"/>
+                                    
+                                    <!-- Internal cavity cutout -->
+                                    <path d="M -25 -5 L 0 -18 L 25 -5 L 0 8 Z" fill="#0f172a"/>
+                                    <path d="M -25 -5 L 0 8 L 0 25 L -25 12 Z" fill="#ef4444" /> <!-- Red internal wall -->
+                                    <path d="M 0 8 L 25 -5 L 25 12 L 0 25 Z" fill="#10b981"/> <!-- Green internal wall -->
+
+                                    <!-- Pull Direction Arrow -->
+                                    <g transform="translate(0, -75)">
+                                        <line x1="0" y1="-30" x2="0" y2="15" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4 4"/>
+                                        <polygon points="-6,5 6,5 0,18" fill="#38bdf8" />
+                                        <text x="12" y="-10" fill="#38bdf8" font-family="monospace" font-size="7" font-weight="bold">MOLD PULL DIR.</text>
+                                    </g>
+                                </g>
+
+                                <!-- Heatmap Legend Overlay -->
+                                <g transform="translate(20, 20)" font-family="monospace" font-size="10" font-weight="bold">
+                                    <!-- Legend Box -->
+                                    <rect x="-5" y="-5" width="180" height="65" fill="rgba(11, 19, 32, 0.8)" rx="4" stroke="#334155"/>
+                                    
+                                    <rect x="5" y="5" width="12" height="12" fill="#10b981" rx="2"/>
+                                    <text x="25" y="15" fill="#f8fafc">&ge; 3.0&deg; (Optimal)</text>
+                                    
+                                    <rect x="5" y="25" width="12" height="12" fill="#f59e0b" rx="2"/>
+                                    <text x="25" y="35" fill="#f8fafc">1.0&deg; - 2.9&deg; (Marginal)</text>
+                                    
+                                    <rect x="5" y="45" width="12" height="12" fill="#ef4444" rx="2"/>
+                                    <text x="25" y="55" fill="#f8fafc">&lt; 1.0&deg; (Action Reqd.)</text>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="bg-gray-800 p-5 border-t border-gray-700">
+                            <h4 class="text-white font-bold text-lg mb-1">Injection Molding Draft Analysis</h4>
+                            <p class="text-sm text-gray-400">Identify tooling feasibility issues, optimize parting lines, and detect undercuts prior to mold fabrication.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-32 relative overflow-hidden flex flex-col items-center justify-center border-t border-cyan-500/20 bg-gradient-to-b from-navy-900 to-[#050912]">
+            <div class="absolute inset-0 blueprint-bg-fine opacity-60 z-0"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+            
+            <div class="relative z-10 text-center max-w-4xl px-4">
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tight">Ready for Engineering Excellence?</h2>
+                <p class="text-xl text-gray-400 mb-12 font-light">
+                    Submit your specifications. We deliver production-ready geometries.
+                </p>
+                <a href="mailto:contact@ogawadynamics.com" class="cta-btn-primary inline-block text-2xl px-16 py-6 rounded uppercase font-black tracking-widest shadow-2xl">
+                    Initiate Project
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer specific to Michigan LLC requirement -->
+    <footer class="bg-[#050912] py-12 border-t border-gray-800 text-center relative z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="text-gray-500 font-mono text-sm tracking-[0.2em] leading-loose uppercase">
+                OGAWA DYNAMICS LLC<br>
+                Michigan Domestic Limited Liability Company
+            </p>
+            <p class="text-gray-600 text-xs mt-4 font-sans">&copy; 2026 Ogawa Dynamics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2.5 + 0.5;
+                
+                // Color palette matching the logo (Teal/Cyan and Deep Blue)
+                const colors = ['rgba(0, 168, 232, ', 'rgba(51, 189, 240, ', 'rgba(30, 58, 138, '];
+                this.colorBase = colors[Math.floor(Math.random() * colors.length)];
+                this.alpha = Math.random() * 0.5 + 0.1;
+                
+                // Slow drifting movement
+                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.speedY = (Math.random() - 0.5) * 0.6;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Bounce off edges smoothly
+                if (this.x < 0 || this.x > width) this.speedX *= -1;
+                if (this.y < 0 || this.y > height) this.speedY *= -1;
+                
+                // Random twinkling effect
+                if(Math.random() > 0.98) {
+                    this.alpha = Math.random() * 0.8 + 0.2;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.colorBase + this.alpha + ')';
+                ctx.fill();
+                
+                // Add a subtle glow to larger particles
+                if (this.size > 2) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.colorBase + '1)';
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = window.innerWidth < 768 ? 60 : 150; 
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // Draw geometric connection lines between close particles
+        function connectParticles() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let dx = particles[a].x - particles[b].x;
+                    let dy = particles[a].y - particles[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 168, 232, ${0.1 - distance/1200})`; // Fades out over distance
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            // Clear canvas with deep navy background
+            ctx.fillStyle = '#0b1320'; 
+            ctx.fillRect(0, 0, width, height);
+
+            connectParticles();
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize
+        window.addEventListener('resize', resize);
+        
+        window.onload = function() {
+            resize();
+            animate();
+        };
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>

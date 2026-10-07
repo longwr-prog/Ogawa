@@ -1,530 +1,259 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ogawa Dynamics | Precision Engineering & Design</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            900: '#0b1320', // Executive Slate Dark
-                            800: '#152238', // Executive Slate Light
-                        },
-                        cyan: {
-                            500: '#00a8e8', // Signature Bright Cyan
-                            400: '#33bdf0',
-                        },
-                        blueprint: 'rgba(0, 168, 232, 0.15)',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Roboto Mono', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
-
+    <title>Ogawa Dynamics | Precision Engineering</title>
     <style>
+        :root {
+            --bg-primary: #0f172a; 
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --cta-bg: #06b6d4; 
+            --cta-hover: #0891b2;
+            --grid-color: rgba(255, 255, 255, 0.03);
+        }
         body {
-            background-color: #0b1320;
-            color: #f8fafc;
-        }
-
-        /* Steel & Blueprint Grid Overlay */
-        .blueprint-bg {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
             background-image: 
-                linear-gradient(rgba(0, 168, 232, 0.07) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 168, 232, 0.07) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: center center;
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            overflow-x: hidden;
         }
-
-        .blueprint-bg-fine {
-            background-image: 
-                linear-gradient(rgba(0, 168, 232, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 168, 232, 0.03) 1px, transparent 1px);
-            background-size: 10px 10px;
-            background-position: center center;
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 4rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-
-        /* Bold Cyan CTA Buttons - Highly Visible */
-        .cta-btn-primary {
-            background-color: #00a8e8;
-            color: #ffffff !important;
-            font-weight: 900;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 20px rgba(0, 168, 232, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .logo svg {
+            height: 50px;
+            width: auto;
         }
-        
-        .cta-btn-primary:hover {
-            background-color: #33bdf0;
-            box-shadow: 0 0 30px rgba(0, 168, 232, 1), inset 0 0 0 1px #ffffff;
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .cta-button {
+            background: var(--cta-bg);
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+        .cta-button:hover {
+            background: var(--cta-hover);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.6);
         }
-
-        /* Technical Card Styling */
-        .tech-card {
-            background: linear-gradient(145deg, #152238, #0b1320);
-            border: 1px solid rgba(0, 168, 232, 0.2);
-            transition: all 0.3s ease;
+        .hero {
+            position: relative;
+            padding: 8rem 4rem;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-
-        .tech-card:hover {
-            border-color: #00a8e8;
-            box-shadow: 0 10px 30px -10px rgba(0, 168, 232, 0.3);
-            transform: translateY(-4px);
-        }
-
-        /* Hero Canvas Positioning */
-        #hero-canvas {
+        #particle-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -1;
+        }
+        .hero-content {
+            max-width: 800px;
+        }
+        h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        h1 span {
+            color: var(--cta-bg);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        .capabilities {
+            padding: 5rem 4rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .placeholder-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 4/3;
+        }
+        .placeholder-box svg {
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .placeholder-caption {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
     </style>
 </head>
-<body class="blueprint-bg relative min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
-    <div class="blueprint-bg-fine absolute inset-0 pointer-events-none z-[-1]"></div>
+<body>
 
-    <nav class="fixed w-full z-50 bg-navy-900/95 backdrop-blur-md border-b border-cyan-500/30 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-24">
-                
-                <!-- Logo: Custom Inline SVG -->
-                <div class="flex-shrink-0 flex items-center cursor-pointer group">
-                    <!-- SVG Mark (O and D) -->
-                    <svg viewBox="0 0 120 100" class="h-14 w-auto transform transition-transform group-hover:scale-105" xmlns="http://www.w3.org/2000/svg" style="height: 60px;">
-                        <defs>
-                            <linearGradient id="dGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#00a8e8"/>
-                                <stop offset="100%" stop-color="#152238"/>
-                            </linearGradient>
-                            <linearGradient id="dGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#33bdf0"/>
-                                <stop offset="100%" stop-color="#1e3a8a"/>
-                            </linearGradient>
-                        </defs>
-                        
-                        <!-- The 'O' - Scattered technical dots -->
-                        <g fill="#00a8e8">
-                            <circle cx="25" cy="50" r="3.5"/>
-                            <circle cx="30" cy="30" r="4.5"/>
-                            <circle cx="30" cy="70" r="4"/>
-                            <circle cx="45" cy="18" r="5.5"/>
-                            <circle cx="45" cy="82" r="5"/>
-                            <circle cx="65" cy="15" r="6"/>
-                            <circle cx="65" cy="85" r="6"/>
-                            
-                            <circle cx="38" cy="42" r="2.5"/>
-                            <circle cx="38" cy="58" r="3"/>
-                            <circle cx="50" cy="30" r="4"/>
-                            <circle cx="50" cy="70" r="4"/>
-                            <circle cx="65" cy="28" r="5"/>
-                            <circle cx="65" cy="72" r="4.5"/>
-
-                            <circle cx="15" cy="50" r="2"/>
-                            <circle cx="20" cy="40" r="1.5"/>
-                            <circle cx="22" cy="65" r="2"/>
-                            <circle cx="35" cy="20" r="2"/>
-                            <circle cx="55" cy="10" r="2.5"/>
-                            <circle cx="58" cy="92" r="2"/>
-                        </g>
-
-                        <!-- Darker dots transitioning into the 'D' -->
-                        <g fill="#1e3a8a">
-                            <circle cx="50" cy="50" r="3"/>
-                            <circle cx="60" cy="40" r="3.5"/>
-                            <circle cx="60" cy="60" r="3.5"/>
-                            <circle cx="72" cy="50" r="4.5"/>
-                            <circle cx="75" cy="35" r="4"/>
-                            <circle cx="75" cy="65" r="4"/>
-                        </g>
-
-                        <!-- The 'D' - Solid gradient shape -->
-                        <path d="M 75 15 L 85 15 C 115 15, 120 40, 120 50 C 120 60, 115 85, 85 85 L 75 85 C 82 75, 85 60, 85 50 C 85 40, 82 25, 75 15 Z" fill="url(#dGradDark)"/>
-                    </svg>
-
-                    <!-- Text Next to Mark -->
-                    <div class="ml-4 flex flex-col justify-center">
-                        <span class="text-white font-black text-2xl tracking-[0.1em] leading-none uppercase" style="font-family: 'Inter', sans-serif;">
-                            Ogawa
-                        </span>
-                        <span class="text-cyan-400 font-bold text-xl tracking-[0.15em] leading-none uppercase mt-1" style="font-family: 'Inter', sans-serif;">
-                            Dynamics
-                        </span>
-                    </div>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#services" class="text-gray-300 hover:text-cyan-400 font-medium tracking-wide text-sm transition-colors uppercase">Services</a>
-                    <a href="#capabilities" class="text-gray-300 hover:text-cyan-400 font-medium tracking-wide text-sm transition-colors uppercase">Capabilities</a>
-                    <a href="#contact" class="cta-btn-primary px-8 py-3 rounded uppercase font-black tracking-widest text-sm">Initiate Project</a>
-                </div>
-                
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-white hover:text-cyan-400 focus:outline-none">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
+<header>
+    <div class="logo">
+        <svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="d-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#06b6d4" />
+                    <stop offset="100%" stop-color="#1e3a8a" />
+                </linearGradient>
+            </defs>
+            <circle cx="20" cy="30" r="3" fill="#06b6d4"/>
+            <circle cx="30" cy="20" r="4" fill="#06b6d4"/>
+            <circle cx="30" cy="40" r="4" fill="#1e3a8a"/>
+            <circle cx="42" cy="15" r="5" fill="#06b6d4"/>
+            <circle cx="42" cy="45" r="5" fill="#1e3a8a"/>
+            <circle cx="56" cy="18" r="4" fill="#06b6d4"/>
+            <circle cx="56" cy="42" r="4" fill="#1e3a8a"/>
+            <circle cx="68" cy="25" r="3" fill="#06b6d4"/>
+            <circle cx="68" cy="35" r="3" fill="#1e3a8a"/>
+            <path d="M 80 10 L 105 10 C 125 10, 135 20, 135 30 C 135 40, 125 50, 105 50 L 80 50 Z" fill="url(#d-grad)" />
+            <path d="M 95 25 L 105 25 C 112 25, 115 27, 115 30 C 115 33, 112 35, 105 35 L 95 35 Z" fill="#0f172a"/>
+            <text x="145" y="36" font-family="sans-serif" font-weight="bold" font-size="22" fill="#ffffff">OGAWA</text>
+        </svg>
+    </div>
+    <nav>
+        <a href="#services">Services</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="mailto:contact@ogawadynamics.com?subject=New%20Project%20Inquiry" class="cta-button">Initiate Project</a>
     </nav>
+</header>
 
-    <main class="flex-grow pt-24">
-        <section class="relative h-[85vh] min-h-[650px] flex items-center overflow-hidden border-b border-cyan-500/30">
-            <!-- HTML5 Canvas Background for Particle Animation -->
-            <canvas id="hero-canvas"></canvas>
+<section class="hero">
+    <canvas id="particle-canvas"></canvas>
+    <div class="hero-content">
+        <h1>Translating Complex Specs Into <span>Production Reality.</span></h1>
+        <p>Expert-tier CAD design, Finite Element Analysis (FEA), and seamless product development for aerospace, medical, and industrial sectors.</p>
+        <a href="mailto:contact@ogawadynamics.com?subject=New%20Project%20Inquiry" class="cta-button">Initiate Project</a>
+    </div>
+</section>
 
-            <!-- Hero Content -->
-            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <div class="max-w-3xl">
-                    <div class="inline-flex items-center px-4 py-1.5 rounded border border-cyan-500/50 bg-cyan-500/10 text-cyan-400 text-xs font-mono mb-8 uppercase tracking-widest shadow-[0_0_10px_rgba(0,168,232,0.2)]">
-                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 mr-3 animate-pulse shadow-[0_0_5px_#00a8e8]"></span>
-                        Precision Engineering Platform
-                    </div>
-                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 text-white leading-tight drop-shadow-lg">
-                        Translating Complex Specs Into <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-md">Production Reality.</span>
-                    </h1>
-                    <p class="text-xl text-gray-300 mb-10 max-w-2xl font-light leading-relaxed">
-                        Expert-tier CAD design, Finite Element Analysis (FEA), and seamless product development for aerospace, medical, and industrial sectors.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-5">
-                        <a href="#contact" class="cta-btn-primary text-center px-10 py-4 rounded uppercase font-black tracking-widest text-lg flex items-center justify-center">
-                            Initiate Project
-                            <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </a>
-                        <a href="#capabilities" class="px-10 py-4 rounded uppercase font-bold tracking-widest text-lg border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400 transition-colors text-center bg-navy-800/80 backdrop-blur-md">
-                            View Specs
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="services" class="py-24 bg-navy-900 relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-16">
-                    <h2 class="text-3xl font-black text-white mb-4 uppercase tracking-wider">Core Disciplines</h2>
-                    <div class="w-24 h-1 bg-cyan-500 shadow-[0_0_10px_#00a8e8]"></div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Service 1 -->
-                    <div class="tech-card p-8 rounded-lg border-t-2 border-t-cyan-500">
-                        <div class="text-cyan-400 mb-6 bg-cyan-900/30 inline-block p-4 rounded">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Parametric CAD Design</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                            High-fidelity solid modeling prioritizing manufacturability. We develop robust parametric trees tailored for rapid iteration and strict tolerance control.
-                        </p>
-                    </div>
-
-                    <!-- Service 2 -->
-                    <div class="tech-card p-8 rounded-lg border-t-2 border-t-cyan-500">
-                        <div class="text-cyan-400 mb-6 bg-cyan-900/30 inline-block p-4 rounded">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Finite Element Analysis</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                            Rigorous structural, thermal, and dynamic simulations. Preemptively identify failure modes to optimize material utilization before physical prototyping.
-                        </p>
-                    </div>
-
-                    <!-- Service 3 -->
-                    <div class="tech-card p-8 rounded-lg border-t-2 border-t-cyan-500">
-                        <div class="text-cyan-400 mb-6 bg-cyan-900/30 inline-block p-4 rounded">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Product Development</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                            End-to-end realization from concept ideation to production-ready prints. Focused entirely on sectors requiring absolute precision.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="capabilities" class="py-24 bg-navy-800 border-t border-b border-cyan-500/20 shadow-inner">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-16 text-center">
-                    <h2 class="text-3xl font-black text-white mb-4 uppercase tracking-wider">Technical Documentation & Feasibility</h2>
-                    <p class="text-gray-400 max-w-3xl mx-auto text-lg">High-precision outputs tailored for exact manufacturing execution.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    
-                    <!-- Visual Placeholder 1: 2D Medical Device Cover -->
-                    <div class="flex flex-col bg-navy-900 border border-gray-700 rounded-lg overflow-hidden shadow-2xl hover:border-cyan-500/50 transition-colors">
-                        <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
-                            <span class="font-mono text-sm text-gray-300 flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                                MED_COVER_REV_B.dwg
-                            </span>
-                            <span class="font-mono text-xs font-bold text-cyan-500 bg-cyan-500/10 px-2 py-1 rounded">2D DRAFTING</span>
-                        </div>
-                        <div class="p-6 relative bg-[#0f1929] flex-grow flex items-center justify-center blueprint-bg-fine h-[400px]">
-                            <!-- Detailed SVG 2D Schematic -->
-                            <svg width="100%" height="100%" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="select-none drop-shadow-md">
-                                <g stroke="#e2e8f0" stroke-width="1.5" fill="none">
-                                    <rect x="80" y="80" width="240" height="140" rx="20" ry="20" stroke="#f8fafc" stroke-width="2"/>
-                                    <rect x="95" y="95" width="210" height="110" rx="10" ry="10" stroke-dasharray="6 4" stroke="#94a3b8" />
-                                    <circle cx="130" cy="150" r="15" />
-                                    <circle cx="130" cy="150" r="6" stroke="#94a3b8"/>
-                                    <circle cx="270" cy="150" r="15" />
-                                    <circle cx="270" cy="150" r="6" stroke="#94a3b8"/>
-                                    <rect x="180" y="130" width="40" height="40" rx="4" stroke="#cbd5e1" stroke-width="1.5"/>
-                                </g>
-                                
-                                <g stroke="#00a8e8" stroke-width="1" fill="none" class="font-mono text-[11px] font-bold" font-family="monospace">
-                                    <line x1="80" y1="65" x2="80" y2="35" />
-                                    <line x1="320" y1="65" x2="320" y2="35" />
-                                    <line x1="80" y1="50" x2="320" y2="50" marker-start="url(#arrow)" marker-end="url(#arrow)" />
-                                    <text x="200" y="45" fill="#00a8e8" text-anchor="middle">185.00 ±0.05</text>
-                                    
-                                    <line x1="330" y1="80" x2="360" y2="80" />
-                                    <line x1="330" y1="220" x2="360" y2="220" />
-                                    <line x1="345" y1="80" x2="345" y2="220" marker-start="url(#arrow)" marker-end="url(#arrow)" />
-                                    <text x="350" y="150" fill="#00a8e8" transform="rotate(90, 350, 150)" text-anchor="middle">95.00 ±0.05</text>
-                                    
-                                    <line x1="130" y1="175" x2="130" y2="250" stroke="#00a8e8" stroke-dasharray="2 2" opacity="0.6"/>
-                                    <line x1="270" y1="175" x2="270" y2="250" stroke="#00a8e8" stroke-dasharray="2 2" opacity="0.6"/>
-                                    <line x1="130" y1="240" x2="270" y2="240" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-                                    <text x="200" y="235" fill="#00a8e8" text-anchor="middle">140.00 TYP</text>
-
-                                    <rect x="25" y="260" width="100" height="20" fill="#0b1320" stroke="#00a8e8"/>
-                                    <text x="75" y="273" fill="#00a8e8" text-anchor="middle" font-size="9">⌖ | 0.1 | A | B | C</text>
-                                </g>
-                                
-                                <defs>
-                                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
-                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#00a8e8" />
-                                    </marker>
-                                </defs>
-                            </svg>
-                        </div>
-                        <div class="bg-gray-800 p-5 border-t border-gray-700">
-                            <h4 class="text-white font-bold text-lg mb-1">Medical Device Housing (2D Detail)</h4>
-                            <p class="text-sm text-gray-400">Complete GD&T, tolerance stack-up analysis, and critical-to-function dimensioning for strict compliance.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col bg-navy-900 border border-gray-700 rounded-lg overflow-hidden shadow-2xl hover:border-cyan-500/50 transition-colors">
-                        <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
-                            <span class="font-mono text-sm text-gray-300 flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-[#ff3366]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
-                                TOOLING_FEASIBILITY.sim
-                            </span>
-                            <span class="font-mono text-xs font-bold text-[#ff3366] bg-[#ff3366]/10 px-2 py-1 rounded">DRAFT ANALYSIS</span>
-                        </div>
-                        <div class="p-6 relative bg-gradient-to-br from-[#0f1929] to-navy-900 flex-grow flex items-center justify-center h-[400px]">
-                            <!-- High-Fidelity Isometric 3D SVG Heatmap -->
-                            <svg width="100%" height="100%" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-xl">
-                                <g transform="translate(200, 160) scale(1.4)">
-                                    <ellipse cx="0" cy="55" rx="85" ry="35" fill="rgba(0,0,0,0.6)" filter="blur(6px)" />
-                                    
-                                    <path d="M -70 -15 L 0 -50 L 70 -15 L 0 20 Z" fill="#10b981" stroke="#064e3b" stroke-width="0.5"/>
-                                    <path d="M -70 -15 L 0 20 L 0 60 L -70 25 Z" fill="#f59e0b" stroke="#78350f" stroke-width="0.5"/>
-                                    <path d="M 0 20 L 70 -15 L 70 25 L 0 60 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.5"/>
-                                    
-                                    <path d="M -25 -5 L 0 -18 L 25 -5 L 0 8 Z" fill="#0f172a"/>
-                                    <path d="M -25 -5 L 0 8 L 0 25 L -25 12 Z" fill="#ef4444" />
-                                    <path d="M 0 8 L 25 -5 L 25 12 L 0 25 Z" fill="#10b981"/>
-
-                                    <g transform="translate(0, -75)">
-                                        <line x1="0" y1="-30" x2="0" y2="15" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4 4"/>
-                                        <polygon points="-6,5 6,5 0,18" fill="#38bdf8" />
-                                        <text x="12" y="-10" fill="#38bdf8" font-family="monospace" font-size="7" font-weight="bold">MOLD PULL DIR.</text>
-                                    </g>
-                                </g>
-
-                                <g transform="translate(20, 20)" font-family="monospace" font-size="10" font-weight="bold">
-                                    <rect x="-5" y="-5" width="180" height="65" fill="rgba(11, 19, 32, 0.8)" rx="4" stroke="#334155"/>
-                                    
-                                    <rect x="5" y="5" width="12" height="12" fill="#10b981" rx="2"/>
-                                    <text x="25" y="15" fill="#f8fafc">&ge; 3.0&deg; (Optimal)</text>
-                                    
-                                    <rect x="5" y="25" width="12" height="12" fill="#f59e0b" rx="2"/>
-                                    <text x="25" y="35" fill="#f8fafc">1.0&deg; - 2.9&deg; (Marginal)</text>
-                                    
-                                    <rect x="5" y="45" width="12" height="12" fill="#ef4444" rx="2"/>
-                                    <text x="25" y="55" fill="#f8fafc">&lt; 1.0&deg; (Action Reqd.)</text>
-                                </g>
-                            </svg>
-                        </div>
-                        <div class="bg-gray-800 p-5 border-t border-gray-700">
-                            <h4 class="text-white font-bold text-lg mb-1">Injection Molding Draft Analysis</h4>
-                            <p class="text-sm text-gray-400">Identify tooling feasibility issues, optimize parting lines, and detect undercuts prior to mold fabrication.</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="py-32 relative overflow-hidden flex flex-col items-center justify-center border-t border-cyan-500/20 bg-gradient-to-b from-navy-900 to-[#050912]">
-            <div class="absolute inset-0 blueprint-bg-fine opacity-60 z-0"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-            
-            <div class="relative z-10 text-center max-w-4xl px-4">
-                <h2 class="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tight">Ready for Engineering Excellence?</h2>
-                <p class="text-xl text-gray-400 mb-12 font-light">
-                    Submit your specifications. We deliver production-ready geometries.
-                </p>
-                <a href="#contact" class="cta-btn-primary inline-block text-2xl px-16 py-6 rounded uppercase font-black tracking-widest shadow-2xl">
-                    Initiate Project
-                </a>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-[#050912] py-8 border-t border-gray-800 text-center relative z-10">
-        <div class="max-w-7xl mx-auto px-4">
-            <p class="text-gray-500 text-sm font-sans tracking-wide">
-                &copy; 2026 Ogawa Dynamics LLC. All rights reserved.
-            </p>
+<section id="capabilities" class="capabilities">
+    <div class="grid">
+        <div class="placeholder-box">
+            <svg viewBox="0 0 100 100" stroke="#06b6d4" stroke-width="1.5" fill="none">
+                <rect x="20" y="30" width="60" height="40" rx="5" />
+                <circle cx="50" cy="50" r="10" />
+                <line x1="10" y1="30" x2="15" y2="30" stroke="#94a3b8" />
+                <line x1="10" y1="70" x2="15" y2="70" stroke="#94a3b8" />
+                <line x1="12.5" y1="30" x2="12.5" y2="70" stroke="#94a3b8" />
+                <text x="4" y="52" font-size="4" fill="#94a3b8" stroke="none">40.0 ±0.1</text>
+                <line x1="20" y1="20" x2="20" y2="25" stroke="#94a3b8" />
+                <line x1="80" y1="20" x2="80" y2="25" stroke="#94a3b8" />
+                <line x1="20" y1="22.5" x2="80" y2="22.5" stroke="#94a3b8" />
+                <text x="42" y="19" font-size="4" fill="#94a3b8" stroke="none">60.0 ±0.1</text>
+            </svg>
+            <div class="placeholder-caption">2D Toleranced Drawing: Medical Device Cover</div>
         </div>
-    </footer>
-
-    <script>
-        const canvas = document.getElementById('hero-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-
-        function resize() {
-            width = canvas.width = canvas.offsetWidth;
-            height = canvas.height = canvas.offsetHeight;
-            initParticles();
-        }
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-
-            reset() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.size = Math.random() * 2.5 + 0.5;
-                
-                // Color palette matching the logo (Teal/Cyan and Deep Blue)
-                const colors = ['rgba(0, 168, 232, ', 'rgba(51, 189, 240, ', 'rgba(30, 58, 138, '];
-                this.colorBase = colors[Math.floor(Math.random() * colors.length)];
-                this.alpha = Math.random() * 0.5 + 0.1;
-                
-                // Slow drifting movement
-                this.speedX = (Math.random() - 0.5) * 0.6;
-                this.speedY = (Math.random() - 0.5) * 0.6;
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                
-                // Bounce off edges smoothly
-                if (this.x < 0 || this.x > width) this.speedX *= -1;
-                if (this.y < 0 || this.y > height) this.speedY *= -1;
-                
-                // Random twinkling effect
-                if(Math.random() > 0.98) {
-                    this.alpha = Math.random() * 0.8 + 0.2;
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.colorBase + this.alpha + ')';
-                ctx.fill();
-                
-                // Add a subtle glow to larger particles
-                if (this.size > 2) {
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = this.colorBase + '1)';
-                } else {
-                    ctx.shadowBlur = 0;
-                }
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            const particleCount = window.innerWidth < 768 ? 60 : 150; 
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        // Draw geometric connection lines between close particles
-        function connectParticles() {
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dx = particles[a].x - particles[b].x;
-                    let dy = particles[a].y - particles[b].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 120) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(0, 168, 232, ${0.1 - distance/1200})`; // Fades out over distance
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function animate() {
-            // Clear canvas with deep navy background
-            ctx.fillStyle = '#0b1320'; 
-            ctx.fillRect(0, 0, width, height);
-
-            connectParticles();
-
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        // Initialize
-        window.addEventListener('resize', resize);
         
-        window.onload = function() {
-            resize();
-            animate();
-        };
+        <div class="placeholder-box">
+            <svg viewBox="0 0 100 100" fill="none">
+                <path d="M 30 70 L 50 30 L 70 70 Z" fill="#22c55e" opacity="0.6"/>
+                <path d="M 35 70 L 50 40 L 65 70 Z" fill="#3b82f6" opacity="0.8"/>
+                <path d="M 45 70 L 50 60 L 55 70 Z" fill="#ef4444" opacity="0.8"/>
+                <line x1="20" y1="30" x2="80" y2="30" stroke="#f59e0b" stroke-dasharray="2 2" stroke-width="1"/>
+            </svg>
+            <div class="placeholder-caption">Injection Molding Tooling & Draft Analysis</div>
+        </div>
+    </div>
+</section>
 
-        // Smooth scroll for nav links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+<footer>
+    © 2026 Ogawa Dynamics LLC. All rights reserved.
+</footer>
+
+<script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+
+    const particles = [];
+    for(let i = 0; i < 70; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2 + 1
         });
-    </script>
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#06b6d4';
+        
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            
+            if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+    animate();
+</script>
 </body>
 </html>
